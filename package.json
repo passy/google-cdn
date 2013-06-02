@@ -1,0 +1,38 @@
+{
+  "name": "google-cdn",
+  "version": "0.0.0",
+  "description": "Replaces references to resources on the Google CDN",
+  "keywords": [
+    "cdn",
+    "google"
+  ],
+  "homepage": "https://github.com/passy/google-cdn",
+  "bugs": "https://github.com/passy/google-cdn/issues",
+  "author": {
+    "name": "Pascal Hartig",
+    "email": "phartig@rdrei.net",
+    "url": "http://passy.me"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/passy/google-cdn.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "~1.10.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "files": [
+    "index.js"
+  ]
+}
