@@ -35,7 +35,10 @@
     }
   ],
   "files": [
-    "index.js"
+    "googlecdn.js",
+    "lib/data.js",
+    "util/bower.js",
+    "util/hoist.js"
   ],
   "dependencies": {
     "semver": "~1.1.4",
