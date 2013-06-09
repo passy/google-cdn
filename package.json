@@ -22,7 +22,9 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "mocha": "~1.10.0"
+    "mocha": "~1.10.0",
+    "proxyquire": "~0.4.1",
+    "chai": "~1.6.1"
   },
   "engines": {
     "node": ">=0.8.0"
