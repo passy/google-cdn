@@ -4,11 +4,11 @@
 var path = require('path');
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
-var cdnify = require('./index');
+var googlecdn = require('./googlecdn');
 
 describe('google-cdn', function () {
   it('should load', function () {
-    assert(cdnify !== undefined);
+    assert(googlecdn !== undefined);
   });
 
   it('should replace jquery', function () {
@@ -17,7 +17,7 @@ describe('google-cdn', function () {
       dependencies: { jquery: '~2.0.0' }
     };
 
-    var result = cdnify(source, bowerConfig);
+    var result = googlecdn(source, bowerConfig);
     assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>');
   });
 });
