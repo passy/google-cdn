@@ -13,7 +13,7 @@
     "email": "phartig@rdrei.net",
     "url": "http://passy.me"
   },
-  "main": "index.js",
+  "main": "googlecdn.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/passy/google-cdn.git"
