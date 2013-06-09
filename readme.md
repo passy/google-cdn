@@ -8,4 +8,4 @@ Install: `npm install --save google-cdn`
 
 ## License
 
-MIT License • © [Pascal Hartig](http://passy.me)
+BSD
