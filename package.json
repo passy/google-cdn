@@ -34,5 +34,9 @@
   ],
   "files": [
     "index.js"
-  ]
+  ],
+  "dependencies": {
+    "semver": "~1.1.4",
+    "debug": "~0.7.2"
+  }
 }
