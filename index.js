@@ -27,7 +27,7 @@ function getVersionStr(bowerJson, name) {
 
 module.exports = function cdnify(content, bowerJson, options) {
   options = options || {};
-  options.componentsDirectory = options.componentsDirectory || 'bower_components';
+  options.componentsPath = options.componentsPath || 'bower_components';
 
   Object.keys(replacements).forEach(function (item) {
     var replacement = replacements[item];
@@ -41,7 +41,7 @@ module.exports = function cdnify(content, bowerJson, options) {
     if (version) {
       debug('Choosing version %s for dependency %s', version, item);
 
-      var from = bowerUtil.joinComponent(options.componentsDirectory, replacement.from);
+      var from = bowerUtil.joinComponent(options.componentsPath, replacement.from);
       var to = replacement.to(version);
       content = content.replace(from, to);
 
