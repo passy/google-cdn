@@ -1,5 +1,15 @@
 // hoist a set of lines in a multi-line string (maintaining their order) above a certain other line.
 // takes a "body" string, a "move" array of strings, and a "marker" string, above which the files are moved
+'use strict';
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+}
+
+function lineRegex(line) {
+  return new RegExp('\\s*' + escapeRegExp(line.trim()));
+}
+
 module.exports = function (args) {
   var body = args.body,
     move = args.move,
@@ -51,11 +61,3 @@ module.exports = function (args) {
 
   return lines.join('\n');
 };
-
-function lineRegex(line) {
-  return new RegExp('\s*' + escapeRegExp(line.trim()));
-}
-
-function escapeRegExp(str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-}
