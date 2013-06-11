@@ -44,6 +44,11 @@ The library versions are inferred from the `bowerJson`.
   - `componentsPath`: defaults to `bower_components`, the path you specify in
     your script tags to the components directory.
 
+## Grunt
+
+You can use this module in grunt through the [grunt-google-cdn](https://github.com/btford/grunt-google-cdn)
+plugin, which this module's code is based of.
+
 ## License
 
 BSD
