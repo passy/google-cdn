@@ -20,6 +20,16 @@ describe('google-cdn', function () {
     var result = googlecdn(source, bowerConfig);
     assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>');
   });
+
+  it('should replace jquery ui', function () {
+    var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
+    var bowerConfig = {
+      dependencies: { 'jquery-ui': '~1.10.3' }
+    };
+
+    var result = googlecdn(source, bowerConfig);
+    assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>');
+  });
 });
 
 describe('util/bower', function () {
