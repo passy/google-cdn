@@ -1,6 +1,6 @@
 {
   "name": "google-cdn",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Replaces references to resources on the Google CDN",
   "keywords": [
     "cdn",
