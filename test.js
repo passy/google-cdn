@@ -18,7 +18,7 @@ describe('google-cdn', function () {
     };
 
     var result = googlecdn(source, bowerConfig);
-    assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>');
+    assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
   });
 
   it('should replace jquery ui', function () {
