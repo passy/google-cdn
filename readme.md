@@ -43,6 +43,8 @@ The library versions are inferred from the `bowerJson`.
 
   - `componentsPath`: defaults to `bower_components`, the path you specify in
     your script tags to the components directory.
+  - `cdn`: defaults to `google`. CDN you want to use. Currently, only `google`
+    is supported.
 
 ## Grunt
 
