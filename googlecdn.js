@@ -3,8 +3,7 @@
 var semver = require('semver');
 var debug = require('debug')('google-cdn');
 
-var replacements = require('./lib/data').replacements;
-var versions = require('./lib/data').versions;
+var data = require('./lib/data');
 var bowerUtil = require('./util/bower');
 var hoist = require('./util/hoist');
 
@@ -29,30 +28,39 @@ module.exports = function cdnify(content, bowerJson, options) {
   options = options || {};
   options.componentsPath = options.componentsPath || 'bower_components';
 
-  Object.keys(replacements).forEach(function (item) {
-    var replacement = replacements[item];
-    var versionStr = getVersionStr(bowerJson, item);
+  var cdn = options.cdn || 'google';
+  var cdnData = data[cdn];
+
+  if (!cdnData) {
+    console.warn('CDN ' + cdn + ' is not supported. Skipping');
+    return content;
+  }
+
+  Object.keys(cdnData).forEach(function (name) {
+    var item = cdnData[name];
+    var versionStr = getVersionStr(bowerJson, name);
 
     if (!versionStr) {
       return;
     }
 
-    var version = semver.maxSatisfying(versions[item], versionStr);
+    var version = semver.maxSatisfying(item.versions, versionStr);
     if (version) {
-      debug('Choosing version %s for dependency %s', version, item);
+      debug('Choosing version %s for dependency %s', version, name);
 
-      var from = bowerUtil.joinComponent(options.componentsPath, replacement.from);
-      var to = replacement.to(version);
+      var from = bowerUtil.joinComponent(options.componentsPath, item.main);
+      var to = (typeof item.url === 'function') ? item.url(version) : item.url;
       content = content.replace(from, to);
 
       debug('Replaced %s with %s', from, to);
     } else {
-      debug('Could not find satisfying version for %s %s', item, versionStr);
+      debug('Could not find satisfying version for %s %s', name, versionStr);
     }
   });
 
   var linesToMove = [];
   content.split('\n').forEach(function (line) {
+    // TODO!
     if (line.indexOf(CDN_AJAX_PATH) !== -1) {
       linesToMove.push(line);
     }
