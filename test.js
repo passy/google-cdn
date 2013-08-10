@@ -30,6 +30,16 @@ describe('google-cdn', function () {
     var result = googlecdn(source, bowerConfig);
     assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>');
   });
+
+  it('should support cdnjs', function () {
+    var source = '<script src="bower_components/jquery/jquery.js"></script>';
+    var bowerConfig = {
+      dependencies: { 'jquery': '~2.0.1' }
+    };
+
+    var result = googlecdn(source, bowerConfig, { cdn: 'cdnjs' });
+    assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+  });
 });
 
 describe('util/bower', function () {

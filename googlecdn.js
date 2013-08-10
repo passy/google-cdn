@@ -5,7 +5,6 @@ var debug = require('debug')('google-cdn');
 
 var data = require('./lib/data');
 var bowerUtil = require('./util/bower');
-var hoist = require('./util/hoist');
 
 var CDN_AJAX_PATH = '//ajax.googleapis.com/ajax/libs/';
 
