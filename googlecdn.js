@@ -58,23 +58,5 @@ module.exports = function cdnify(content, bowerJson, options) {
     }
   });
 
-  var linesToMove = [];
-  content.split('\n').forEach(function (line) {
-    // TODO!
-    if (line.indexOf(CDN_AJAX_PATH) !== -1) {
-      linesToMove.push(line);
-    }
-  });
-
-  try {
-    content = hoist({
-      body: content,
-      marker: '<!-- build:js scripts/scripts.js -->',
-      move: linesToMove
-    });
-  } catch (e) {
-    debug('Hoisting failed: %s', e);
-  }
-
   return content;
 };
