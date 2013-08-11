@@ -1,3 +1,16 @@
+<a name="v0.2.1"></a>
+### v0.2.1 (2013-08-11)
+
+
+#### Bug Fixes
+
+* **cdnify:** strip leading slashes ([4e01423f](http://github.com/passy/google-cdn/commit/4e01423fb22451f2df95c7d74c071b30d9585c31))
+
+
+#### Features
+
+* **data:** dojo, swfobject for google CDN ([bdb5c3b7](http://github.com/passy/google-cdn/commit/bdb5c3b7b848d842bea401007c13dee8175b3299))
+
 <a name="v0.2.0"></a>
 ## v0.2.0 (2013-08-11)
 
