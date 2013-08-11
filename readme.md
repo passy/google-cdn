@@ -56,6 +56,13 @@ The library versions are inferred from the `bowerJson`.
 You can use this module in grunt through the [grunt-google-cdn](https://github.com/btford/grunt-google-cdn)
 plugin, which this module's code is based of.
 
+## Debugging
+
+You can turn on debugging by setting the `DEBUG` environment variable to
+`google-cdn`. E.g.
+
+`env DEBUG='google-cdn' grunt cdnify`
+
 ## License
 
 BSD
