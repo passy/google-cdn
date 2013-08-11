@@ -5,12 +5,25 @@ var path = require('path');
 var fs = require('fs');
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
-var googlecdn = require('./googlecdn');
+var bowerUtil = require('./util/bower');
 var EventEmitter = require('events').EventEmitter;
 
 describe('google-cdn', function () {
+  beforeEach(function () {
+    this.mainPath = '';
+
+    this.googlecdn = proxyquire('./googlecdn', {
+      './util/bower': {
+        resolveMainPath: function (name, version, cb) {
+          cb(null, this.mainPath);
+        }.bind(this),
+        joinComponent: bowerUtil.joinComponent
+      }
+    });
+  });
+
   it('should load', function () {
-    assert(googlecdn !== undefined);
+    assert(this.googlecdn !== undefined);
   });
 
   it('should replace jquery', function (cb) {
@@ -19,7 +32,9 @@ describe('google-cdn', function () {
       dependencies: { jquery: '~2.0.0' }
     };
 
-    googlecdn(source, bowerConfig, function (err, result) {
+    this.mainPath = 'jquery/jquery.js';
+
+    this.googlecdn(source, bowerConfig, function (err, result) {
       if (err) {
         return cb(err);
       }
@@ -35,7 +50,9 @@ describe('google-cdn', function () {
       dependencies: { 'jquery-ui': '~1.10.3' }
     };
 
-    googlecdn(source, bowerConfig, function (err, result) {
+    this.mainPath = 'jquery-ui/ui/jquery-ui.js';
+
+    this.googlecdn(source, bowerConfig, function (err, result) {
       if (err) {
         return cb(err);
       }
@@ -51,7 +68,9 @@ describe('google-cdn', function () {
       dependencies: { 'jquery': '~2.0.1' }
     };
 
-    googlecdn(source, bowerConfig, { cdn: 'cdnjs' }, function (err, result) {
+    this.mainPath = 'jquery/jquery.js';
+
+    this.googlecdn(source, bowerConfig, { cdn: 'cdnjs' }, function (err, result) {
       if (err) {
         return cb(err);
       }
