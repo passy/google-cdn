@@ -36,12 +36,14 @@
   ],
   "files": [
     "googlecdn.js",
-    "lib/data.js",
-    "util/bower.js",
-    "util/hoist.js"
+    "lib/",
+    "util/"
   ],
   "dependencies": {
     "semver": "~2.1.0",
     "debug": "~0.7.2"
+  },
+  "peerDependencies": {
+    "bower": ">=1.0.0"
   }
 }
