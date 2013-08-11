@@ -1,0 +1,7 @@
+{
+  "name": "cdnify-example",
+  "dependencies": {
+    "angular": "~1.0.7",
+    "jquery": "~2.0.3"
+  }
+}
