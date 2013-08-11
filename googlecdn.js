@@ -6,8 +6,6 @@ var debug = require('debug')('google-cdn');
 var data = require('./lib/data');
 var bowerUtil = require('./util/bower');
 
-var CDN_AJAX_PATH = '//ajax.googleapis.com/ajax/libs/';
-
 
 function getVersionStr(bowerJson, name) {
   var versionStr;
