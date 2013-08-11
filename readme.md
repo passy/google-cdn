@@ -27,14 +27,19 @@ var googlecdn = require('google-cdn');
 
 var bowerConfig = loadJSON('bower.json');
 var markup = '<script src="bower_components/jquery/jquery.js"></script>';
-var result = googlecdn(markup, bowerConfig);
-assert.equal(result,
-  '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>');
+googlecdn(markup, bowerConfig, function (err, result) {
+  if (err) {
+    throw err;
+  }
+
+  assert.equal(result,
+    '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>');
+});
 ```
 
 ## API
 
-### googlecdn(content, bowerJson[, options])
+### googlecdn(content, bowerJson[, options], callback)
 
 Replaces references to libraries supported by the Google CDN in `content`.
 The library versions are inferred from the `bowerJson`.

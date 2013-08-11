@@ -13,34 +13,53 @@ describe('google-cdn', function () {
     assert(googlecdn !== undefined);
   });
 
-  it('should replace jquery', function () {
+  it('should replace jquery', function (cb) {
     var source = '<script src="bower_components/jquery/jquery.js"></script>';
     var bowerConfig = {
       dependencies: { jquery: '~2.0.0' }
     };
 
-    var result = googlecdn(source, bowerConfig);
-    assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+    googlecdn(source, bowerConfig, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+      cb();
+    });
   });
 
-  it('should replace jquery ui', function () {
+  it('should replace jquery ui', function (cb) {
     var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
     var bowerConfig = {
       dependencies: { 'jquery-ui': '~1.10.3' }
     };
 
-    var result = googlecdn(source, bowerConfig);
-    assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>');
+    googlecdn(source, bowerConfig, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>');
+      cb();
+    });
   });
 
-  it('should support cdnjs', function () {
+  it('should support cdnjs', function (cb) {
     var source = '<script src="bower_components/jquery/jquery.js"></script>';
     var bowerConfig = {
       dependencies: { 'jquery': '~2.0.1' }
     };
 
-    var result = googlecdn(source, bowerConfig, { cdn: 'cdnjs' });
-    assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+    googlecdn(source, bowerConfig, { cdn: 'cdnjs' }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+      cb();
+    });
+
   });
 });
 

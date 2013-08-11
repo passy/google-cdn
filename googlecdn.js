@@ -23,7 +23,18 @@ function getVersionStr(bowerJson, name) {
 }
 
 
-module.exports = function cdnify(content, bowerJson, options) {
+function isFunction(fn) {
+  return typeof(fn) === 'function';
+}
+
+
+module.exports = function cdnify(content, bowerJson, options, callback) {
+
+  if (isFunction(options)) {
+    callback = options;
+    options = {};
+  }
+
   options = options || {};
   options.componentsPath = options.componentsPath || 'bower_components';
 
@@ -31,8 +42,7 @@ module.exports = function cdnify(content, bowerJson, options) {
   var cdnData = data[cdn];
 
   if (!cdnData) {
-    console.warn('CDN ' + cdn + ' is not supported. Skipping');
-    return content;
+    return callback(new Error('CDN ' + cdn + ' is not supported.'));
   }
 
   Object.keys(cdnData).forEach(function (name) {
@@ -47,15 +57,21 @@ module.exports = function cdnify(content, bowerJson, options) {
     if (version) {
       debug('Choosing version %s for dependency %s', version, name);
 
-      var from = bowerUtil.joinComponent(options.componentsPath, item.main);
-      var to = (typeof item.url === 'function') ? item.url(version) : item.url;
-      content = content.replace(from, to);
+      bowerUtil.resolveMainPath(name, versionStr, function (err, main) {
+        if (err) {
+          return callback(err);
+        }
 
-      debug('Replaced %s with %s', from, to);
+        var from = bowerUtil.joinComponent(options.componentsPath, main);
+        var to = (typeof item.url === 'function') ? item.url(version) : item.url;
+        content = content.replace(from, to);
+        debug('Replaced %s with %s', from, to);
+
+        callback(null, content);
+      });
+
     } else {
       debug('Could not find satisfying version for %s %s', name, versionStr);
     }
   });
-
-  return content;
 };
