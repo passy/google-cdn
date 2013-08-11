@@ -78,7 +78,24 @@ describe('google-cdn', function () {
       assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
       cb();
     });
+  });
 
+  it('should strip leading slashes', function (cb) {
+    var source = '<script src="/bower_components/jquery/jquery.js"></script>';
+    var bowerConfig = {
+      dependencies: { 'jquery': '2.0.3' }
+    };
+
+    this.mainPath = 'jquery/jquery.js';
+
+    this.googlecdn(source, bowerConfig, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>');
+      cb();
+    });
   });
 });
 

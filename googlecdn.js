@@ -3,6 +3,7 @@
 var async = require('async');
 var semver = require('semver');
 var debug = require('debug')('google-cdn');
+var requote = require('regexp-quote');
 
 var data = require('./lib/data');
 var bowerUtil = require('./util/bower');
@@ -61,7 +62,9 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
           return callback(err);
         }
 
-        var from = bowerUtil.joinComponent(options.componentsPath, main);
+        // Replace leading slashes if present.
+        var fromRe = '/?' + requote(bowerUtil.joinComponent(options.componentsPath, main));
+        var from = new RegExp(fromRe);
         var to = (isFunction(item.url)) ? item.url(version) : item.url;
 
         callback(null, { from: from, to: to });
