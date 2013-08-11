@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var semver = require('semver');
 var debug = require('debug')('google-cdn');
 
@@ -43,12 +44,12 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
     return callback(new Error('CDN ' + cdn + ' is not supported.'));
   }
 
-  Object.keys(cdnData).forEach(function (name) {
+  function buildReplacement(name, callback) {
     var item = cdnData[name];
     var versionStr = getVersionStr(bowerJson, name);
 
     if (!versionStr) {
-      return;
+      return callback();
     }
 
     var version = semver.maxSatisfying(item.versions, versionStr);
@@ -61,15 +62,29 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
         }
 
         var from = bowerUtil.joinComponent(options.componentsPath, main);
-        var to = (typeof item.url === 'function') ? item.url(version) : item.url;
-        content = content.replace(from, to);
-        debug('Replaced %s with %s', from, to);
+        var to = (isFunction(item.url)) ? item.url(version) : item.url;
 
-        callback(null, content);
+        callback(null, { from: from, to: to });
       });
-
     } else {
       debug('Could not find satisfying version for %s %s', name, versionStr);
+      callback();
     }
+  }
+
+  async.map(Object.keys(cdnData), buildReplacement, function (err, replacements) {
+    if (err) {
+      return callback(err);
+    }
+
+    replacements.forEach(function (replacement) {
+      if (replacement) {
+        content = content.replace(replacement.from, replacement.to);
+        debug('Replaced %s with %s', replacement.from, replacement.to);
+
+      }
+    });
+
+    callback(null, content);
   });
 };

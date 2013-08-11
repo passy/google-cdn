@@ -41,7 +41,8 @@
   ],
   "dependencies": {
     "semver": "~2.1.0",
-    "debug": "~0.7.2"
+    "debug": "~0.7.2",
+    "async": "~0.2.9"
   },
   "peerDependencies": {
     "bower": ">=1.0.0"
