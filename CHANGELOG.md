@@ -1,3 +1,11 @@
+<a name="v0.2.2"></a>
+### v0.2.2 (2013-08-31)
+
+
+#### Features
+
+* **data:** add AngularJS 1.0.8 ([72e44f01](http://github.com/passy/google-cdn/commit/72e44f0121153942a9b77b987c1c3570474ad2d5))
+
 <a name="v0.2.1"></a>
 ### v0.2.1 (2013-08-11)
 
