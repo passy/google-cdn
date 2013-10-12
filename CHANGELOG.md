@@ -1,3 +1,11 @@
+<a name="v0.2.3"></a>
+### v0.2.3 (2013-10-12)
+
+
+#### Bug Fixes
+
+* **data:** remove non-existent jQuery version
+
 <a name="v0.2.2"></a>
 ### v0.2.2 (2013-08-31)
 
