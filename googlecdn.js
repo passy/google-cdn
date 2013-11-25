@@ -138,10 +138,18 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
               scriptEndIndex = regexEndIndexOf(content, scriptEnd, replacementEndIndex);
 
             if (scriptStartIndex >= 0 && scriptEndIndex > 0) {
+              //match indentation
+              var lineBreak = /^/gm,
+                firstChar = /[^\s]/,
+                lineStartIndex = regexLastIndexOf(content, lineBreak, scriptStartIndex),
+                firstCharIndex = regexIndexOf(content, firstChar, lineStartIndex),
+                leftMargin = content.substr(lineStartIndex, firstCharIndex - lineStartIndex);
+
               content = content.substr(0, replacementStartIndex) +
                         replacement.toStr +
                         content.substr(replacementEndIndex, scriptEndIndex - replacementEndIndex) +
                         os.EOL +
+                        leftMargin +
                         '<script>' + replacement.test + ' || document.write(\'<script src=\"' + replacement.fromStr + '\"><\\/script>\')</script>' +
                         content.substr(scriptEndIndex);
               debug('Added local fallback to %s', replacement.fromStr);
