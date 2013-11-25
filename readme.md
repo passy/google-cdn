@@ -50,6 +50,19 @@ The library versions are inferred from the `bowerJson`.
     your script tags to the components directory.
   - `cdn`: defaults to `google`. CDN you want to use. Possible values: `google`,
     `cdnjs`
+  - `useLocalFallback`: defaults to `false`.  If available, will generate an
+    additional script tag with a fallback to your local copy.  For example:
+
+    ```html
+    <script src="bower_components/jquery/jquery.js"></script>
+    ```
+
+    becomes
+
+    ```html
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="bower_components/jquery/jquery.js"><\/script>')</script>
+    ```
 
 ## Grunt
 

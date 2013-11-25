@@ -127,7 +127,7 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
         debug('Replaced %s with %s', replacement.fromStr, replacement.toStr);
 
         // add fallback script block if specified in options
-        if (options.useFallback && replacement.test) {
+        if (options.useLocalFallback && replacement.test) {
           var replacementStartIndex = -1;
 
           while ((replacementStartIndex = regexIndexOf(content, replacement.toRegExp, replacementStartIndex+1)) !== -1) {
