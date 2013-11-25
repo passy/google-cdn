@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path');
-var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var debug = require('debug')('google-cdn');
 var bowerUtil = module.exports;
 
@@ -16,14 +16,21 @@ bowerUtil.joinComponent = function joinComponent(directory, component) {
 
 
 function findJSMainFile(componentData) {
-  var main = componentData.main;
+  var main = componentData.main,
+    validMainRegExp = /\.js$/i;
+
   if (Array.isArray(main)) {
     var js = main.filter(function (name) {
-      return (/\.js$/i).test(name);
+      return validMainRegExp.test(name);
     });
 
     if (js.length === 1) {
       return js[0];
+    }
+  }
+  else if(main !== null) {
+    if (validMainRegExp.test(main)) {
+      return main;
     }
   }
 
@@ -33,24 +40,14 @@ function findJSMainFile(componentData) {
 
 
 bowerUtil.resolveMainPath = function resolveMain(component, version, callback) {
-  var args = ['info', '--json', component + '#' + version];
-  var output = '';
-  debug('resolving main property for component %s#%s', component, version);
-  var ps = spawn('bower', args, {
-    stdio: ['ignore', 'pipe', 'ignore']
-  });
+  debug('Resolving main property for component %s#%s', component, version);
 
-  ps.stdout.on('data', function (data) {
-    output += data;
-  });
-
-  ps.on('close', function (code) {
-    debug('bower exited with status code %d', code);
-    if (code !== 0) {
-      return callback(new Error('bower exited non-zero with ' + code));
+  var cmd = 'bower info --json ' + component + '#' + version;
+  var ps = exec(cmd, function (error, stdout, stderr) {
+    if (error !== null) {
+      return callback(new Error('bower exited non-zero with ' + error.code));
     }
-
-    var data = JSON.parse(output);
+    var data = JSON.parse(stdout);
     var main = findJSMainFile(data);
     callback(null, data.name + '/' + main);
   });
