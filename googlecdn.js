@@ -30,35 +30,35 @@ function isFunction(fn) {
 // Similar to String.indexOf, but with regular expressions
 // Returns the index of the match or -1
 function regexIndexOf(string, regex, startpos) {
-    var result = regex.exec(string.substring(startpos || 0));
-    return (result && result.index >= 0) ? (result.index + (startpos || 0)) : -1;
+  var result = regex.exec(string.substring(startpos || 0));
+  return (result && result.index >= 0) ? (result.index + (startpos || 0)) : -1;
 }
 
 // Similar to String.indexOf, but with regular expressions
 // Returns the index after the last character in the match or -1
 function regexEndIndexOf(string, regex, startpos) {
-    var result = regex.exec(string.substring(startpos || 0));
-    return (result && result.index >= 0) ? (result.index + (startpos || 0) + result[0].length) : -1;
+  var result = regex.exec(string.substring(startpos || 0));
+  return (result && result.index >= 0) ? (result.index + (startpos || 0) + result[0].length) : -1;
 }
 
 // Similar to String.lastIndexOf, but with regular expressions
 // Returns the index of the match (searching backwards from startpos) or -1
 function regexLastIndexOf(string, regex, startpos) {
-    regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiLine ? "m" : ""));
-    if(typeof (startpos) == "undefined") {
-        startpos = string.length;
-    } else if(startpos < 0) {
-        startpos = 0;
-    }
-    var stringToWorkWith = string.substring(0, startpos + 1)
-      , lastIndexOf = -1
-      , nextStop = 0
-      , result;
-    while((result = regex.exec(stringToWorkWith)) != null) {
-        lastIndexOf = result.index;
-        regex.lastIndex = ++nextStop;
-    }
-    return lastIndexOf;
+  regex = (regex.global) ? regex : new RegExp(regex.source, 'g' + (regex.ignoreCase ? 'i' : '') + (regex.multiLine ? 'm' : ''));
+  if(typeof (startpos) === 'undefined') {
+    startpos = string.length;
+  } else if(startpos < 0) {
+    startpos = 0;
+  }
+  var stringToWorkWith = string.substring(0, startpos + 1),
+    lastIndexOf = -1,
+    nextStop = 0,
+    result;
+  while((result = regex.exec(stringToWorkWith)) !== null) {
+    lastIndexOf = result.index;
+    regex.lastIndex = ++nextStop;
+  }
+  return lastIndexOf;
 }
 
 
@@ -96,10 +96,10 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
           return callback(err);
         }
 
-        var fromStr = bowerUtil.joinComponent(options.componentsPath, main)
-          , fromRegExp = new RegExp('/?' + requote(fromStr), "g")  // Replace leading slashes if present.
-          , toStr = (isFunction(item.url)) ? item.url(version) : item.url
-          , toRegExp = new RegExp(requote(toStr));
+        var fromStr = bowerUtil.joinComponent(options.componentsPath, main),
+          fromRegExp = new RegExp('/?' + requote(fromStr), 'g'),  // Replace leading slashes if present.
+          toStr = (isFunction(item.url)) ? item.url(version) : item.url,
+          toRegExp = new RegExp(requote(toStr));
 
         callback(null, {
           test: item.test,
@@ -130,20 +130,20 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
         if (options.useFallback && replacement.test) {
           var replacementStartIndex = -1;
 
-          while ((replacementStartIndex = regexIndexOf(content, replacement.toRegExp, replacementStartIndex+1)) != -1) {
-            var replacementEndIndex = replacementStartIndex + replacement.toStr.length
-              , scriptStart = /<\s*script/
-              , scriptEnd = /<\s*\/\s*script\s*>/
-              , scriptStartIndex = regexLastIndexOf(content, scriptStart, replacementStartIndex)
-              , scriptEndIndex = regexEndIndexOf(content, scriptEnd, replacementEndIndex);
+          while ((replacementStartIndex = regexIndexOf(content, replacement.toRegExp, replacementStartIndex+1)) !== -1) {
+            var replacementEndIndex = replacementStartIndex + replacement.toStr.length,
+              scriptStart = /<\s*script/,
+              scriptEnd = /<\s*\/\s*script\s*>/,
+              scriptStartIndex = regexLastIndexOf(content, scriptStart, replacementStartIndex),
+              scriptEndIndex = regexEndIndexOf(content, scriptEnd, replacementEndIndex);
 
             if (scriptStartIndex >= 0 && scriptEndIndex > 0) {
-              content = content.substr(0, replacementStartIndex)
-                        + replacement.toStr
-                        + content.substr(replacementEndIndex, scriptEndIndex - replacementEndIndex)
-                        + os.EOL
-                        + "<script>"+replacement.test+" || document.write('<script src=\""+ replacement.fromStr +"\"><\\/script>')</script>"
-                        + content.substr(scriptEndIndex);
+              content = content.substr(0, replacementStartIndex) +
+                        replacement.toStr +
+                        content.substr(replacementEndIndex, scriptEndIndex - replacementEndIndex) +
+                        os.EOL +
+                        '<script>' + replacement.test + ' || document.write(\'<script src=\"' + replacement.fromStr + '\"><\\/script>\')</script>' +
+                        content.substr(scriptEndIndex);
               debug('Added local fallback to %s', replacement.fromStr);
             }
           }
