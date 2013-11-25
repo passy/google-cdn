@@ -2,6 +2,11 @@
   "name": "cdnify-example",
   "dependencies": {
     "angular": "~1.0.7",
-    "jquery": "~2.0.3"
+    "angular-cookies": "~1.0.7",
+    "angular-resource": "~1.0.7",
+    "angular-sanitize": "~1.0.7",
+    "jquery": "~2.0.3",
+    "jquery-ui": "~1.10.3",
+    "dojo": "~1.7.1"
   }
 }
