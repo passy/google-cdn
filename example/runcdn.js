@@ -6,7 +6,7 @@ var googlecdn = require('../googlecdn.js');
 var index = fs.readFileSync('index.html', { encoding: 'utf-8' });
 var bowerJson = require('./bower.json');
 
-googlecdn(index, bowerJson, function (err, content) {
+googlecdn(index, bowerJson, {useLocalFallback: true}, function (err, content) {
   if (err) {
     throw err;
   }
