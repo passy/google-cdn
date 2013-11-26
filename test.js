@@ -107,14 +107,13 @@ describe('util/bower', function () {
     };
 
     this.processData = '';
-    this.spawnMock = function spawnMock() {
+    this.execMock = function execMock(cmd, callback) {
       var ps = new EventEmitter();
 
-      ps.stdout = new EventEmitter();
-
       process.nextTick(function () {
-        ps.stdout.emit('data', this.processData);
+        callback(null, this.processData, null);
         ps.emit('close', 0);
+        ps.emit('exit', 0);
       }.bind(this));
 
       return ps;
@@ -124,7 +123,7 @@ describe('util/bower', function () {
       path: this.pathMock,
       /*jshint camelcase:false */
       child_process: {
-        spawn: this.spawnMock
+        exec: this.execMock
       }
     });
   });
