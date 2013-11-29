@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
     // Task configuration.
@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         src: 'Gruntfile.js'
       },
       lib: {
-        src: ['googlecdn.js', 'test/**/*.js']
+        src: ['googlecdn.js', 'test.js']
       }
     },
     watch: {
