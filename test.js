@@ -125,6 +125,9 @@ describe('util/bower', function () {
       /*jshint camelcase:false */
       child_process: {
         spawn: this.spawnMock
+      },
+      which: {
+        sync: function () {}
       }
     });
   });
