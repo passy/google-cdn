@@ -39,7 +39,7 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
   options.componentsPath = options.componentsPath || 'bower_components';
 
   var cdn = options.cdn || 'google';
-  var cdnData = data[cdn];
+  var cdnData = (typeof(cdn) === 'object' ? cdn : data[cdn]);
 
   if (!cdnData) {
     return callback(new Error('CDN ' + cdn + ' is not supported.'));

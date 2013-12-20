@@ -49,7 +49,18 @@ The library versions are inferred from the `bowerJson`.
   - `componentsPath`: defaults to `bower_components`, the path you specify in
     your script tags to the components directory.
   - `cdn`: defaults to `google`. CDN you want to use. Possible values: `google`,
-    `cdnjs`
+    `cdnjs` or object of the following format:
+
+  ```javascript
+  {
+    jquery: {
+      versions: ['2.0.3', '2.0.2', '2.0.1', '2.0.0'],
+      url: function (version) {
+        return '//my.own.cdn/libs/jquery/' + version + '/jquery.min.js';
+      }
+    }
+  }
+  ```
 
 ## Grunt
 

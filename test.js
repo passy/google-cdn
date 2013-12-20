@@ -80,6 +80,33 @@ describe('google-cdn', function () {
     });
   });
 
+  it('should support cdn object', function (cb) {
+    var source = '<script src="bower_components/jquery/jquery.js"></script>';
+    var bowerConfig = {
+      dependencies: { 'jquery': '~2.0.1' }
+    };
+
+    this.mainPath = 'jquery/jquery.js';
+
+    var cdnObject = {
+      jquery: {
+        versions: ['2.0.3', '2.0.2', '2.0.1', '2.0.0'],
+        url: function (version) {
+          return '//my.own.cdn/libs/jquery/' + version + '/jquery.min.js';
+        }
+      }
+    };
+
+    this.googlecdn(source, bowerConfig, { cdn: cdnObject }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//my.own.cdn/libs/jquery/2.0.3/jquery.min.js"></script>');
+      cb();
+    });
+  });
+
   it('should strip leading slashes', function (cb) {
     var source = '<script src="/bower_components/jquery/jquery.js"></script>';
     var bowerConfig = {
