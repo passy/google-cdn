@@ -161,6 +161,30 @@ describe('util/bower', function () {
     });
   });
 
+  it('should resolve lodash to a main path', function (cb) {
+    this.queryResult = 'dist/lodash.compat.js';
+    this.util.resolveMainPath('lodash', '2.4.1', function (err, path) {
+      if (err) {
+        cb(err);
+      }
+
+      assert.equal(path, 'lodash/dist/lodash.compat.js');
+      cb();
+    });
+  });
+
+  it('should resolve angular to a main path', function (cb) {
+    this.queryResult = './angular.js';
+    this.util.resolveMainPath('angular', '1.2.6', function (err, path) {
+      if (err) {
+        cb(err);
+      }
+
+      assert.equal(path, 'angular/angular.js');
+      cb();
+    });
+  });
+
   it('should resolve just js for multiple main files', function (cb) {
     this.queryResult = ['css/multiple.css', 'lib/multiple.js'];
     this.util.resolveMainPath('multiple-main', '1.10.3', function (err, path) {

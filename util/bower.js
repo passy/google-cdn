@@ -24,6 +24,8 @@ function findJSMainFile(component, main) {
     if (js.length === 1) {
       return js[0];
     }
+  } else if (typeof(main) === 'string') {
+    return main;
   }
 
   debug('Cannot determine main property');
@@ -34,6 +36,6 @@ function findJSMainFile(component, main) {
 bowerUtil.resolveMainPath = function resolveMain(component, version, callback) {
   debug('resolving main property for component %s#%s', component, version);
   bower.commands.info(component + '#' + version, 'main').on('end', function (main) {
-    callback(null, component + '/' + findJSMainFile(component, main));
+    callback(null, bowerUtil.joinComponent(component, findJSMainFile(component, main)));
   }).on('error', callback);
 };
