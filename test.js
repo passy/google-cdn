@@ -2,7 +2,6 @@
 
 'use strict';
 var path = require('path');
-var fs = require('fs');
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var bowerUtil = require('./util/bower');
@@ -106,28 +105,23 @@ describe('util/bower', function () {
       sep: '/'  // Always test the unix way by default.
     };
 
-    this.processData = '';
-    this.spawnMock = function spawnMock() {
-      var ps = new EventEmitter();
-
-      ps.stdout = new EventEmitter();
+    this.queryResult = '';
+    this.bowerInfoMock = function bowerInfoMock() {
+      var query = new EventEmitter();
 
       process.nextTick(function () {
-        ps.stdout.emit('data', this.processData);
-        ps.emit('close', 0);
+        query.emit('end', this.queryResult);
       }.bind(this));
 
-      return ps;
+      return query;
     }.bind(this);
 
     this.util = proxyquire('./util/bower', {
       path: this.pathMock,
-      /*jshint camelcase:false */
-      child_process: {
-        spawn: this.spawnMock
-      },
-      which: {
-        sync: function () {}
+      bower: {
+        commands: {
+          info: this.bowerInfoMock
+        }
       }
     });
   });
@@ -144,7 +138,7 @@ describe('util/bower', function () {
   });
 
   it('should resolve jquery to a main path', function (cb) {
-    this.processData = fs.readFileSync('./fixture/jquery-2.0.0.json');
+    this.queryResult = 'jquery.js';
     this.util.resolveMainPath('jquery', '2.0.0', function (err, path) {
       if (err) {
         cb(err);
@@ -156,7 +150,7 @@ describe('util/bower', function () {
   });
 
   it('should resolve jquery-ui to a main path', function (cb) {
-    this.processData = fs.readFileSync('./fixture/jquery-ui-1.10.3.json');
+    this.queryResult = ['ui/jquery-ui.js'];
     this.util.resolveMainPath('jquery-ui', '1.10.3', function (err, path) {
       if (err) {
         cb(err);
@@ -168,7 +162,7 @@ describe('util/bower', function () {
   });
 
   it('should resolve just js for multiple main files', function (cb) {
-    this.processData = fs.readFileSync('./fixture/multiple-main.json');
+    this.queryResult = ['css/multiple.css', 'lib/multiple.js'];
     this.util.resolveMainPath('multiple-main', '1.10.3', function (err, path) {
       if (err) {
         cb(err);
@@ -180,7 +174,7 @@ describe('util/bower', function () {
   });
 
   it('should fall fall back to name w/o main', function (cb) {
-    this.processData = fs.readFileSync('./fixture/no-main.json');
+    this.queryResult = undefined;
     this.util.resolveMainPath('no-main', '1.0', function (err, path) {
       if (err) {
         cb(err);

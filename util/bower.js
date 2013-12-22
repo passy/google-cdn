@@ -1,10 +1,9 @@
 'use strict';
 
+var bower = require('bower');
 var path = require('path');
-var spawn = require('child_process').spawn;
 var debug = require('debug')('google-cdn');
 var bowerUtil = module.exports;
-var which = require('which').sync;
 
 
 bowerUtil.joinComponent = function joinComponent(directory, component) {
@@ -16,8 +15,7 @@ bowerUtil.joinComponent = function joinComponent(directory, component) {
 };
 
 
-function findJSMainFile(componentData) {
-  var main = componentData.main;
+function findJSMainFile(component, main) {
   if (Array.isArray(main)) {
     var js = main.filter(function (name) {
       return (/\.js$/i).test(name);
@@ -29,30 +27,13 @@ function findJSMainFile(componentData) {
   }
 
   debug('Cannot determine main property');
-  return componentData.name.replace(/js$/i, '') + '.js';
+  return component.replace(/js$/i, '') + '.js';
 }
 
 
 bowerUtil.resolveMainPath = function resolveMain(component, version, callback) {
-  var args = ['info', '--json', component + '#' + version];
-  var output = '';
   debug('resolving main property for component %s#%s', component, version);
-  var ps = spawn(which('bower'), args, {
-    stdio: ['ignore', 'pipe', 'ignore']
-  });
-
-  ps.stdout.on('data', function (data) {
-    output += data;
-  });
-
-  ps.on('close', function (code) {
-    debug('bower exited with status code %d', code);
-    if (code !== 0) {
-      return callback(new Error('bower exited non-zero with ' + code));
-    }
-
-    var data = JSON.parse(output);
-    var main = findJSMainFile(data);
-    callback(null, data.name + '/' + main);
-  });
+  bower.commands.info(component + '#' + version, 'main').on('end', function (main) {
+    callback(null, component + '/' + findJSMainFile(component, main));
+  }).on('error', callback);
 };
