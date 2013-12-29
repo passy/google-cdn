@@ -1,8 +1,0 @@
-{
-  "name": "multiple-main",
-  "version": "1.10.3",
-  "main": [
-    "css/multiple.css",
-    "lib/multiple.js"
-  ]
-}
