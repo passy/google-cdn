@@ -62,10 +62,10 @@ The library versions are inferred from the `bowerJson`.
   }
   ```
 
-## Grunt
+## Used by
 
-You can use this module in grunt through the [grunt-google-cdn](https://github.com/btford/grunt-google-cdn)
-plugin, which this module's code is based of.
+- [grunt-google-cdn](https://github.com/btford/grunt-google-cdn)
+- [gulp-google-cdn](https://github.com/sindresorhus/gulp-google-cdn)
 
 ## Debugging
 
