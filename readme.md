@@ -1,4 +1,4 @@
-# google-cdn [![Build Status](https://secure.travis-ci.org/passy/google-cdn.png?branch=master)](http://travis-ci.org/passy/google-cdn)
+# google-cdn [![Build Status](https://secure.travis-ci.org/passy/google-cdn.png?branch=master)](http://travis-ci.org/passy/google-cdn) [![Dependency Status](https://gemnasium.com/passy/google-cdn.png)](https://gemnasium.com/passy/google-cdn)
 
 > Grunt task for replacing refs to resources on the [Google CDN](https://developers.google.com/speed/libraries/devguide).
 
