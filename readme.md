@@ -3,7 +3,7 @@
 > Grunt task for replacing refs to resources on the [Google CDN](https://developers.google.com/speed/libraries/devguide).
 
 This module makes it easy to replace references to your bower resources in your
-app with links to the libraries on the Google CDN.
+app with links to the libraries on the Google CDN (and some other CDNs).
 
 ## Getting started
 
