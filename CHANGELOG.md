@@ -1,3 +1,17 @@
+<a name="v0.3.0"></a>
+## v0.3.0 (2014-01-11)
+
+
+#### Bug Fixes
+
+* **bower:** main path resolving bug fixes ([3d68ebd1](http://github.com/passy/google-cdn/commit/3d68ebd1ff104086906de3300425d70f93fa7f36))
+
+
+#### Features
+
+* **cdnify:** allow passing a cdn data object in options ([778258fc](http://github.com/passy/google-cdn/commit/778258fc384ede18146c62264df9be656a2dfbe2))
+* **data:** angular 1.2.7, 1.2.8 ([0b582be5](http://github.com/passy/google-cdn/commit/0b582be55044434de9daeedc15c5a3c2dd0ecb9b))
+
 <a name="v0.2.3"></a>
 ### v0.2.3 (2013-10-12)
 
