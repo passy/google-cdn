@@ -9,6 +9,8 @@ app with links to the libraries on the Google CDN (and some other CDNs).
 
 Install: `npm install --save google-cdn`
 
+Install CDN data module: `npm install --save google-cdn-data` (see list of more [data modules](#cdn-data-modules) below)
+
 ### Example
 
 *bower.json*:
@@ -27,7 +29,7 @@ var googlecdn = require('google-cdn');
 
 var bowerConfig = loadJSON('bower.json');
 var markup = '<script src="bower_components/jquery/jquery.js"></script>';
-googlecdn(markup, bowerConfig, function (err, result) {
+googlecdn(markup, bowerConfig, {cdn: require('google-cdn-data')}, function (err, result) {
   if (err) {
     throw err;
   }
@@ -48,8 +50,7 @@ The library versions are inferred from the `bowerJson`.
 
   - `componentsPath`: defaults to `bower_components`, the path you specify in
     your script tags to the components directory.
-  - `cdn`: defaults to `google`. CDN you want to use. Possible values: `google`,
-    `cdnjs` or object of the following format:
+  - `cdn`: defaults to `require('google-cdn-data')`. CDN you want to use. Object of the following format:
 
   ```javascript
   {
@@ -66,6 +67,12 @@ The library versions are inferred from the `bowerJson`.
 
 - [grunt-google-cdn](https://github.com/btford/grunt-google-cdn)
 - [gulp-google-cdn](https://github.com/sindresorhus/gulp-google-cdn)
+
+## CDN data modules
+
+- [google-cdn-data](https://github.com/shahata/google-cdn-data)
+- [cdnjs-cdn-data](https://github.com/shahata/cdnjs-cdn-data)
+- [jsdelivr-cdn-data](https://github.com/shahata/jsdelivr-cdn-data)
 
 ## Debugging
 
