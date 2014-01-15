@@ -50,6 +50,8 @@
     "debug": "~0.7.2",
     "async": "~0.2.9",
     "regexp-quote": "0.0.0",
-    "bower": "~1.2.8"
+    "bower": "~1.2.8",
+    "google-cdn-data": "~0.1.0",
+    "cdnjs-cdn-data": "~0.1.0"
   }
 }

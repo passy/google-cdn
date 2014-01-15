@@ -5,7 +5,11 @@ var semver = require('semver');
 var debug = require('debug')('google-cdn');
 var requote = require('regexp-quote');
 
-var data = require('./lib/data');
+var data = {
+  google: require('google-cdn-data'),
+  cdnjs: require('cdnjs-cdn-data')
+};
+
 var bowerUtil = require('./util/bower');
 
 
