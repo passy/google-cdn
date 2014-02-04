@@ -1,3 +1,11 @@
+<a name="v0.4.0"></a>
+## v0.4.0 (2014-02-04)
+
+
+#### Features
+
+* **data:** update cdnjs data ([b7a4e45f](http://github.com/passy/google-cdn/commit/b7a4e45ff2932f11bd91b79d3d75b97ac6d2d3a0))
+
 <a name="v0.3.0"></a>
 ## v0.3.0 (2014-01-11)
 
