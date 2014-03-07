@@ -49,6 +49,13 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
     return callback(new Error('CDN ' + cdn + ' is not supported.'));
   }
 
+  function generateReplacement(bowerPath, url) {
+    // Replace leading slashes if present.
+    var fromRe = '/?' + requote(bowerUtil.joinComponent(options.componentsPath, bowerPath));
+    var from = new RegExp(fromRe);
+    return { from: from, to: url };
+  }
+
   function buildReplacement(name, callback) {
     var item = cdnData[name];
     var versionStr = getVersionStr(bowerJson, name);
@@ -59,20 +66,20 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
 
     var version = semver.maxSatisfying(item.versions, versionStr);
     if (version) {
+      var url = (isFunction(item.url)) ? item.url(version) : item.url;
       debug('Choosing version %s for dependency %s', version, name);
 
-      bowerUtil.resolveMainPath(name, versionStr, function (err, main) {
-        if (err) {
-          return callback(err);
-        }
-
-        // Replace leading slashes if present.
-        var fromRe = '/?' + requote(bowerUtil.joinComponent(options.componentsPath, main));
-        var from = new RegExp(fromRe);
-        var to = (isFunction(item.url)) ? item.url(version) : item.url;
-
-        callback(null, { from: from, to: to });
-      });
+      if (item.all) {
+        callback(null, generateReplacement(name, url));
+      } else {
+        bowerUtil.resolveMainPath(name, versionStr, function (err, main) {
+          if (err) {
+            return callback(err);
+          } else {
+            callback(null, generateReplacement(main, url));
+          }
+        });
+      }
     } else {
       debug('Could not find satisfying version for %s %s', name, versionStr);
       callback();
