@@ -1,3 +1,11 @@
+<a name="v0.5.0"></a>
+## v0.5.0 (2014-03-07)
+
+
+#### Features
+
+* **cdnify:** support 'all' flag in cdn data ([db3550c5](http://github.com/passy/google-cdn/commit/db3550c57535cec2d89cf7548605e12ef790135b))
+
 <a name="v0.4.0"></a>
 ## v0.4.0 (2014-02-04)
 
