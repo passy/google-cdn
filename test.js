@@ -106,6 +106,32 @@ describe('google-cdn', function () {
     });
   });
 
+  it('should allow cdn data to include all files in the bower component', function (cb) {
+    var source = '<script src="bower_components/angular-i18n/angular-locale_he.js"></script>';
+    var bowerConfig = {
+      dependencies: { 'angular-i18n': '~1.2.0' }
+    };
+
+    var cdnObject = {
+      'angular-i18n': {
+        all: true,
+        versions: ['1.2.6', '1.2.10', '1.2.14'],
+        url: function (version) {
+          return '//my.own.cdn/libs/angularjs/' + version + '/i18n';
+        }
+      }
+    };
+
+    this.googlecdn(source, bowerConfig, { cdn: cdnObject }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//my.own.cdn/libs/angularjs/1.2.14/i18n/angular-locale_he.js"></script>');
+      cb();
+    });
+  });
+
   it('should strip leading slashes', function (cb) {
     var source = '<script src="/bower_components/jquery/jquery.js"></script>';
     var bowerConfig = {
