@@ -56,9 +56,17 @@ describe('google-cdn', function () {
         return cb(err);
       }
 
-      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>');
+      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>');
       cb();
     });
+  });
+
+  it('should throw without bowerJson', function () {
+    var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
+    var bowerConfig = null;
+
+    var fn = this.googlecdn.bind(this, source, bowerConfig, function () {});
+    assert.throw(fn, /bowerJson.*missing/);
   });
 
   it('should support cdnjs', function (cb) {

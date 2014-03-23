@@ -34,6 +34,10 @@ function isFunction(fn) {
 
 module.exports = function cdnify(content, bowerJson, options, callback) {
 
+  if (!bowerJson) {
+    throw new Error('Required argument `bowerJson` is missing.');
+  }
+
   if (isFunction(options)) {
     callback = options;
     options = {};
