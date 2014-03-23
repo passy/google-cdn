@@ -1,3 +1,11 @@
+<a name="v0.5.1"></a>
+### v0.5.1 (2014-03-23)
+
+
+#### Bug Fixes
+
+* **cdnify:** throw if bowerJson is missing ([6d583a6d](http://github.com/passy/google-cdn/commit/6d583a6d4066780a45a045a208c2f71cbb22e5e7))
+
 <a name="v0.5.0"></a>
 ## v0.5.0 (2014-03-07)
 
