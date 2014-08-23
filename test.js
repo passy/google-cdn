@@ -157,6 +157,46 @@ describe('google-cdn', function () {
       cb();
     });
   });
+
+  it('should print jquery replacement information', function(cb){
+    var source = '<script src="bower_components/jquery/jquery.js"></script>';
+    var bowerConfig = {
+      dependencies: { jquery: '~2.0.0' }
+    };
+
+    this.mainPath = 'jquery/jquery.js';
+
+    this.googlecdn(source, bowerConfig, function (err, result, replacementInfo) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(replacementInfo[0].from, 'bower_components/jquery/jquery.js');
+      assert.equal(replacementInfo[0].to, '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js');
+      cb();
+    });
+  });
+
+  it('should print jquery-ui replacement information', function(cb){
+    var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
+    var bowerConfig = {
+      dependencies: {
+        'jquery-ui': '~1.10.3'
+      }
+    };
+
+    this.mainPath = 'jquery-ui/ui/jquery-ui.js';
+
+    this.googlecdn(source, bowerConfig, function (err, result, replacementInfo) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(replacementInfo[0].from, 'bower_components/jquery-ui/ui/jquery-ui.js');
+      assert.equal(replacementInfo[0].to, '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js');
+      cb();
+    });
+  });
 });
 
 describe('util/bower', function () {

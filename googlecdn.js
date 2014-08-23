@@ -55,9 +55,14 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
 
   function generateReplacement(bowerPath, url) {
     // Replace leading slashes if present.
-    var fromRe = '/?' + requote(bowerUtil.joinComponent(options.componentsPath, bowerPath));
-    var from = new RegExp(fromRe);
-    return { from: from, to: url };
+    var from = bowerUtil.joinComponent(options.componentsPath, bowerPath);
+    var fromRe = '/?' + requote(from);
+    var fromRegex = new RegExp(fromRe);
+    return {
+      from: from,
+      fromRegex: fromRegex,
+      to: url
+    };
   }
 
   function buildReplacement(name, callback) {
@@ -95,14 +100,16 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
       return callback(err);
     }
 
+    var replacementInfo = [];
+
     replacements.forEach(function (replacement) {
       if (replacement) {
-        content = content.replace(replacement.from, replacement.to);
-        debug('Replaced %s with %s', replacement.from, replacement.to);
-
+        content = content.replace(replacement.fromRegex, replacement.to);
+        debug('Replaced %s with %s', replacement.fromRegex, replacement.to);
+        replacementInfo.push(replacement);
       }
     });
 
-    callback(null, content);
+    callback(null, content, replacementInfo);
   });
 };
