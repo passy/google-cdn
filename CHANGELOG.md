@@ -1,3 +1,12 @@
+<a name="0.7.0"></a>
+## 0.7.0 (2014-08-23)
+
+
+#### Features
+
+* **cdnify:** expose an replacementInfo in the callback ([217c1c1d](http://github.com/passy/google-cdn/commit/217c1c1d66e723db0b9be843a7e29967a7202ecf))
+
+
 <a name="v0.5.1"></a>
 ### v0.5.1 (2014-03-23)
 
