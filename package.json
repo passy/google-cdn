@@ -52,6 +52,6 @@
     "debug": "^1.0.2",
     "google-cdn-data": "~0.1.0",
     "regexp-quote": "0.0.0",
-    "semver": "^2.3.0"
+    "semver": "^3.0.0"
   }
 }
