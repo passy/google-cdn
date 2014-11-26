@@ -1,3 +1,16 @@
+<a name="1.0.0"></a>
+## 1.0.0 (2014-11-26)
+
+
+#### Features
+
+* **deps:** Upgrade to semver 4 ([38b6eb84](http://github.com/passy/google-cdn/commit/38b6eb8441c9493fb0cf82a5bd47d700ec5f73f0))
+
+
+<a name="1.0.0"></a>
+## 1.0.0 (2014-11-26)
+
+
 <a name="0.7.0"></a>
 ## 0.7.0 (2014-08-23)
 
