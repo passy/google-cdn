@@ -24,10 +24,10 @@
   },
   "devDependencies": {
     "chai": "^1.10.0",
-    "grunt": "~0.4.2",
+    "grunt": "^0.4.2",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-conventional-changelog": "~1.1.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-conventional-changelog": "^1.1.0",
     "mocha": "^2.0.1",
     "proxyquire": "^1.0.1"
   },
