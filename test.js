@@ -13,8 +13,15 @@ describe('google-cdn', function () {
 
     this.googlecdn = proxyquire('./googlecdn', {
       './util/bower': {
-        resolveMainPath: function (name, version, cb) {
-          cb(null, this.mainPath);
+        resolveMainPath: function (supportedTypes, name, version, cb) {
+          var mainFiles = {};
+          var that = this;
+          supportedTypes.types.forEach(function (type) {
+            if (supportedTypes.typesRegex[type].test(that.mainPath)) {
+              mainFiles[type] = that.mainPath;
+            }
+          });
+          cb(null, mainFiles);
         }.bind(this),
         joinComponent: bowerUtil.joinComponent
       }
@@ -65,7 +72,8 @@ describe('google-cdn', function () {
     var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
     var bowerConfig = null;
 
-    var fn = this.googlecdn.bind(this, source, bowerConfig, function () {});
+    var fn = this.googlecdn.bind(this, source, bowerConfig, function () {
+    });
     assert.throw(fn, /bowerJson.*missing/);
   });
 
@@ -158,7 +166,7 @@ describe('google-cdn', function () {
     });
   });
 
-  it('should print jquery replacement information', function(cb){
+  it('should print jquery replacement information', function (cb) {
     var source = '<script src="bower_components/jquery/jquery.js"></script>';
     var bowerConfig = {
       dependencies: { jquery: '~2.0.0' }
@@ -177,7 +185,7 @@ describe('google-cdn', function () {
     });
   });
 
-  it('should print jquery-ui replacement information', function(cb){
+  it('should print jquery-ui replacement information', function (cb) {
     var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
     var bowerConfig = {
       dependencies: {
@@ -205,7 +213,14 @@ describe('util/bower', function () {
       join: path.join,
       sep: '/'  // Always test the unix way by default.
     };
-
+    var supportedTypes = {
+      types: ['js'],
+      typesRegex: {}
+    };
+    supportedTypes.types.forEach(function (type) {
+      supportedTypes.typesRegex[type] = new RegExp('\\.' + type + '$', 'i');
+    });
+    this.supportedTypes = supportedTypes;
     this.queryResult = '';
     this.bowerInfoMock = function bowerInfoMock() {
       var query = new EventEmitter();
@@ -240,72 +255,93 @@ describe('util/bower', function () {
 
   it('should resolve jquery to a main path', function (cb) {
     this.queryResult = 'jquery.js';
-    this.util.resolveMainPath('jquery', '2.0.0', function (err, path) {
+    this.util.resolveMainPath(this.supportedTypes, 'jquery', '2.0.0', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'jquery/jquery.js');
+      assert.deepEqual(path, { js: 'jquery/jquery.js' });
       cb();
     });
   });
 
   it('should resolve jquery-ui to a main path', function (cb) {
     this.queryResult = ['ui/jquery-ui.js'];
-    this.util.resolveMainPath('jquery-ui', '1.10.3', function (err, path) {
+    this.util.resolveMainPath(this.supportedTypes, 'jquery-ui', '1.10.3', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'jquery-ui/ui/jquery-ui.js');
+      assert.deepEqual(path, { js: 'jquery-ui/ui/jquery-ui.js' });
       cb();
     });
   });
 
   it('should resolve lodash to a main path', function (cb) {
     this.queryResult = 'dist/lodash.compat.js';
-    this.util.resolveMainPath('lodash', '2.4.1', function (err, path) {
+    this.util.resolveMainPath(this.supportedTypes, 'lodash', '2.4.1', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'lodash/dist/lodash.compat.js');
+      assert.deepEqual(path, { js: 'lodash/dist/lodash.compat.js' });
       cb();
     });
   });
 
   it('should resolve angular to a main path', function (cb) {
     this.queryResult = './angular.js';
-    this.util.resolveMainPath('angular', '1.2.6', function (err, path) {
+    this.util.resolveMainPath(this.supportedTypes, 'angular', '1.2.6', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'angular/angular.js');
+      assert.deepEqual(path, { js: 'angular/angular.js' });
       cb();
     });
   });
 
   it('should resolve just js for multiple main files', function (cb) {
     this.queryResult = ['css/multiple.css', 'lib/multiple.js'];
-    this.util.resolveMainPath('multiple-main', '1.10.3', function (err, path) {
+    this.util.resolveMainPath(this.supportedTypes, 'multiple-main', '1.10.3', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'multiple-main/lib/multiple.js');
+      assert.deepEqual(path, { js: 'multiple-main/lib/multiple.js' });
       cb();
     });
   });
 
-  it('should fall fall back to name w/o main', function (cb) {
-    this.queryResult = undefined;
-    this.util.resolveMainPath('no-main', '1.0', function (err, path) {
+
+  it('should resolve both css and js for multiple main files', function (cb) {
+    var supportedTypes = {
+      types: ['js', 'css'],
+      typesRegex: {}
+    };
+    supportedTypes.types.forEach(function (type) {
+      supportedTypes.typesRegex[type] = new RegExp('\\.' + type + '$', 'i');
+    });
+    this.queryResult = ['css/multiple.css', 'lib/multiple.js'];
+    this.util.resolveMainPath(supportedTypes, 'multiple-main', '1.10.3', function (err, path) {
       if (err) {
         cb(err);
       }
 
-      assert.equal(path, 'no-main/no-main.js');
+      assert.deepEqual(path, { js: 'multiple-main/lib/multiple.js', css: 'multiple-main/css/multiple.css' });
+      cb();
+    });
+  });
+
+
+  it('should fall fall back to name w/o main', function (cb) {
+    this.queryResult = undefined;
+    this.util.resolveMainPath(this.supportedTypes, 'no-main', '1.0', function (err, path) {
+      if (err) {
+        cb(err);
+      }
+
+      assert.deepEqual(path, { js: 'no-main/no-main.js' });
       cb();
     });
   });

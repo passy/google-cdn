@@ -31,6 +31,21 @@ function isFunction(fn) {
   return typeof(fn) === 'function';
 }
 
+function getCDNUrl(item, type, version) {
+  var url = item[type] || item.url;
+  if (url) {
+    return (isFunction(url)) ? url(version) : url;
+  }
+}
+
+function getTypesArray(types) {
+  if (Array.isArray(types) || typeof(types) === 'string') {
+    return [].concat(types);
+  } else if (types) {
+    throw new Error('Types must be an array or a string');
+  }
+}
+
 
 module.exports = function cdnify(content, bowerJson, options, callback) {
 
@@ -48,6 +63,13 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
 
   var cdn = options.cdn || 'google';
   var cdnData = (typeof(cdn) === 'object' ? cdn : data[cdn]);
+
+  var supportedTypes = {};
+  supportedTypes.types = getTypesArray(options.types) || ['js', 'css'];
+  supportedTypes.typesRegex = {};
+  supportedTypes.types.forEach(function (type) {
+    supportedTypes.typesRegex[type] = new RegExp('\\.' + type + '$', 'i');
+  });
 
   if (!cdnData) {
     return callback(new Error('CDN ' + cdn + ' is not supported.'));
@@ -75,17 +97,25 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
 
     var version = semver.maxSatisfying(item.versions, versionStr);
     if (version) {
-      var url = (isFunction(item.url)) ? item.url(version) : item.url;
       debug('Choosing version %s for dependency %s', version, name);
 
       if (item.all) {
+        var url = (isFunction(item.url)) ? item.url(version) : item.url;
         callback(null, generateReplacement(name, url));
       } else {
-        bowerUtil.resolveMainPath(name, versionStr, function (err, main) {
+        bowerUtil.resolveMainPath(supportedTypes, name, versionStr, function (err, main) {
           if (err) {
             return callback(err);
           } else {
-            callback(null, generateReplacement(main, url));
+            var replacements = [];
+            for (var type in main) {
+              var url = getCDNUrl(item, type, version);
+              if (url) {
+                replacements.push(generateReplacement(main[type], url));
+              }
+            }
+            callback(null, replacements);
+
           }
         });
       }
@@ -100,16 +130,25 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
       return callback(err);
     }
 
+    function replaceContent(fileReplacement) {
+      if (fileReplacement) {
+        content = content.replace(fileReplacement.fromRegex, fileReplacement.to);
+        debug('Replaced %s with %s', fileReplacement.fromRegex, fileReplacement.to);
+        replacementInfo.push(fileReplacement);
+      }
+    }
+
     var replacementInfo = [];
 
     replacements.forEach(function (replacement) {
       if (replacement) {
-        content = content.replace(replacement.fromRegex, replacement.to);
-        debug('Replaced %s with %s', replacement.fromRegex, replacement.to);
-        replacementInfo.push(replacement);
+        if (Array.isArray(replacement)) {
+          replacement.forEach(replaceContent);
+        } else {
+          replaceContent(replacement);
+        }
       }
     });
-
     callback(null, content, replacementInfo);
   });
 };
