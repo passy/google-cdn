@@ -4,6 +4,7 @@ var async = require('async');
 var semver = require('semver');
 var debug = require('debug')('google-cdn');
 var requote = require('regexp-quote');
+var escape = require('escape-regexp');
 
 var data = {
   google: require('google-cdn-data'),
@@ -68,7 +69,7 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
   supportedTypes.types = getTypesArray(options.types) || ['js', 'css'];
   supportedTypes.typesRegex = {};
   supportedTypes.types.forEach(function (type) {
-    supportedTypes.typesRegex[type] = new RegExp('\\.' + type + '$', 'i');
+    supportedTypes.typesRegex[type] = new RegExp('\\.' + escape(type) + '$', 'i');
   });
 
   if (!cdnData) {
