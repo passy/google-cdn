@@ -42,6 +42,7 @@
       "type": "BSD"
     }
   ],
+  "license": "BSD-3-Clause",
   "files": [
     "googlecdn.js",
     "lib/",
