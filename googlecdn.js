@@ -17,7 +17,7 @@ var bowerUtil = require('./util/bower');
 function getVersionStr(bowerJson, name) {
   var versionStr;
   if (bowerJson.dependencies) {
-    versionStr = bowerJson.dependencies[name];
+    versionStr = bowerJson.dependencies[name] || bowerJson.dependencies[name.replace(/\.js$/,'')];
   }
 
   if (!versionStr && bowerJson.devDependencies && bowerJson.devDependencies[name]) {
