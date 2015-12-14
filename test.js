@@ -15,10 +15,10 @@ describe('google-cdn', function () {
       './util/bower': {
         resolveMainPath: function (supportedTypes, name, version, cb) {
           var mainFiles = {};
-          var that = this;
+          var thatMainPath = (typeof(this.mainPath) === 'object' ? this.mainPath[name] : this.mainPath);
           supportedTypes.types.forEach(function (type) {
-            if (supportedTypes.typesRegex[type].test(that.mainPath)) {
-              mainFiles[type] = that.mainPath;
+            if (supportedTypes.typesRegex[type].test(thatMainPath)) {
+              mainFiles[type] = thatMainPath;
             }
           });
           cb(null, mainFiles);
@@ -86,6 +86,24 @@ describe('google-cdn', function () {
     });
   });
 
+  it('should replace lodash as a devDependency', function (cb) {
+    var source = '<script src="bower_components/lodash/dist/lodash.compat.js"></script>';
+    var bowerConfig = {
+      devDependencies: { lodash: '~3.9.0' }
+    };
+
+    this.mainPath = 'lodash/dist/lodash.compat.js';
+
+    this.googlecdn(source, bowerConfig, { cdn: 'cdnjs' }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>');
+      cb();
+    });
+  });
+
   it('should throw without bowerJson', function () {
     var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
     var bowerConfig = null;
@@ -136,6 +154,40 @@ describe('google-cdn', function () {
       }
 
       assert.equal(result, '<script src="//my.own.cdn/libs/jquery/2.0.3/jquery.min.js"></script>');
+      cb();
+    });
+  });
+
+  it('should support cdn array', function (cb) {
+    var source = '<script src="bower_components/jquery/jquery.js">' +
+      '</script><script src="bower_components/d3/d3.js"></script>';
+    var bowerConfig = {
+      dependencies: {
+        'jquery': '~2.0.1',
+        'd3': '~3.4.0'
+      }
+    };
+
+    this.mainPath = {
+      'jquery': 'jquery/jquery.js',
+      'd3': 'd3/d3.js',
+    };
+
+    this.googlecdn(source, bowerConfig, { cdn: ['google', 'cdnjs'] }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js"></script>');
+      cb();
+    });
+  });
+
+  it('should return an error if a requested cdn does not exist', function (cb) {
+    var source = '';
+    var bowerConfig = {};
+    this.googlecdn(source, bowerConfig, { cdn: ['google', 'does-not-exist', 'cdnjs'] }, function (err) {
+      assert.match(err, /CDN.*is not supported./);
       cb();
     });
   });

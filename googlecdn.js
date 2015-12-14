@@ -13,18 +13,40 @@ var data = {
 
 var bowerUtil = require('./util/bower');
 
-
-function getVersionStr(bowerJson, name) {
-  var versionStr;
-  if (bowerJson.dependencies) {
-    versionStr = bowerJson.dependencies[name] || bowerJson.dependencies[name.replace(/\.js$/,'')];
+function normalizeBowerName(bowerJson, name) {
+  if ((bowerJson.dependencies && bowerJson.dependencies[name]) ||
+      (bowerJson.devDependencies && bowerJson.devDependencies[name])) {
+    return name;
+  } else {
+    return name.replace(/\.js$/,'');
   }
+}
 
-  if (!versionStr && bowerJson.devDependencies && bowerJson.devDependencies[name]) {
-    versionStr = bowerJson.devDependencies[name];
+function getDepVersionStr(deps, name, cleanup) {
+  if (deps) {
+    var versionStr = deps[name];
+    if (versionStr && cleanup) {
+      delete deps[name];
+    }
+    return versionStr;
+  }
+}
+
+function getVersionStr(bowerJson, name, cleanup) {
+  var versionStr;
+  var bowerName = normalizeBowerName(bowerJson, name);
+
+  versionStr = getDepVersionStr(bowerJson.dependencies, bowerName, cleanup);
+
+  if (!versionStr) {
+    versionStr = getDepVersionStr(bowerJson.devDependencies, bowerName, cleanup);
   }
 
   return versionStr;
+}
+
+function satisfyDependency(bowerJson, name) {
+  getVersionStr(bowerJson, name, true);
 }
 
 
@@ -48,14 +70,16 @@ function getTypesArray(types) {
 }
 
 
-module.exports = function cdnify(content, bowerJson, options, callback) {
+module.exports = function cdnify(content, bowerJsonOriginal, options, masterCallback) {
 
-  if (!bowerJson) {
+  if (!bowerJsonOriginal) {
     throw new Error('Required argument `bowerJson` is missing.');
   }
+  //clone bowerJson so that it can be modified
+  var bowerJson = JSON.parse(JSON.stringify(bowerJsonOriginal));
 
   if (isFunction(options)) {
-    callback = options;
+    masterCallback = options;
     options = {};
   }
 
@@ -63,7 +87,16 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
   options.componentsPath = options.componentsPath || 'bower_components';
 
   var cdn = options.cdn || 'google';
-  var cdnData = (typeof(cdn) === 'object' ? cdn : data[cdn]);
+  var cdnData = {};
+  if (Array.isArray(cdn)) {
+    cdn.forEach(function(host) {
+      cdnData[host] = data[host];
+    });
+  } else if (typeof(cdn) === 'object') {
+    cdnData.custom = cdn;
+  } else {
+    cdnData[cdn] = data[cdn];
+  }
 
   var supportedTypes = {};
   supportedTypes.types = getTypesArray(options.types) || ['js', 'css'];
@@ -72,8 +105,16 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
     supportedTypes.typesRegex[type] = new RegExp('\\.' + escape(type) + '$', 'i');
   });
 
-  if (!cdnData) {
-    return callback(new Error('CDN ' + cdn + ' is not supported.'));
+  var cdnHostList = Object.keys(cdnData);
+
+  if (!cdnHostList.length) {
+    return masterCallback(new Error('CDN ' + cdn + ' is not supported.'));
+  }
+  for (var i = 0; i < cdnHostList.length; i++) {
+    var badCdn = cdnHostList[i];
+    if (!cdnData[badCdn]) {
+      return masterCallback(new Error('CDN ' + badCdn + ' is not supported.'));
+    }
   }
 
   function generateReplacement(bowerPath, url) {
@@ -88,68 +129,82 @@ module.exports = function cdnify(content, bowerJson, options, callback) {
     };
   }
 
-  function buildReplacement(name, callback) {
-    var item = cdnData[name];
-    var versionStr = getVersionStr(bowerJson, name);
+  function buildReplacement(cdnHost) {
+    return function(name, callback) {
+      var item = cdnData[cdnHost][name];
+      var versionStr = getVersionStr(bowerJson, name);
 
-    if (!versionStr) {
-      return callback();
-    }
-
-    var version = semver.maxSatisfying(item.versions, versionStr);
-    if (version) {
-      debug('Choosing version %s for dependency %s', version, name);
-
-      if (item.all) {
-        var url = (isFunction(item.url)) ? item.url(version) : item.url;
-        callback(null, generateReplacement(name, url));
-      } else {
-        bowerUtil.resolveMainPath(supportedTypes, name, versionStr, function (err, main) {
-          if (err) {
-            return callback(err);
-          } else {
-            var replacements = [];
-            for (var type in main) {
-              var url = getCDNUrl(item, type, version);
-              if (url) {
-                replacements.push(generateReplacement(main[type], url));
-              }
-            }
-            callback(null, replacements);
-
-          }
-        });
+      if (!versionStr) {
+        return callback();
       }
-    } else {
-      debug('Could not find satisfying version for %s %s', name, versionStr);
-      callback();
-    }
+      name = normalizeBowerName(bowerJson, name);
+
+      var version = semver.maxSatisfying(item.versions, versionStr);
+      if (version) {
+        satisfyDependency(bowerJson, name);
+        debug('Choosing version %s for dependency %s', version, name);
+
+        if (item.all) {
+          var url = (isFunction(item.url)) ? item.url(version) : item.url;
+          callback(null, generateReplacement(name, url));
+        } else {
+          bowerUtil.resolveMainPath(supportedTypes, name, versionStr, function (err, main) {
+            if (err) {
+              return callback(err);
+            } else {
+              var replacements = [];
+              for (var type in main) {
+                var url = getCDNUrl(item, type, version);
+                if (url) {
+                  replacements.push(generateReplacement(main[type], url));
+                }
+              }
+              callback(null, replacements);
+
+            }
+          });
+        }
+      } else {
+        debug('Could not find satisfying version for %s %s', name, versionStr);
+        callback();
+      }
+    };
   }
 
-  async.map(Object.keys(cdnData), buildReplacement, function (err, replacements) {
-    if (err) {
-      return callback(err);
-    }
+  var replacementInfo = [];
 
-    function replaceContent(fileReplacement) {
-      if (fileReplacement) {
-        content = content.replace(fileReplacement.fromRegex, fileReplacement.to);
-        debug('Replaced %s with %s', fileReplacement.fromRegex, fileReplacement.to);
-        replacementInfo.push(fileReplacement);
+  function buildReplacementForHost(cdnHost, callback) {
+    async.map(Object.keys(cdnData[cdnHost]), buildReplacement(cdnHost), function (err, replacements) {
+      if (err) {
+        return callback(err);
       }
-    }
 
-    var replacementInfo = [];
-
-    replacements.forEach(function (replacement) {
-      if (replacement) {
-        if (Array.isArray(replacement)) {
-          replacement.forEach(replaceContent);
-        } else {
-          replaceContent(replacement);
+      function replaceContent(fileReplacement) {
+        if (fileReplacement) {
+          content = content.replace(fileReplacement.fromRegex, fileReplacement.to);
+          debug('Replaced %s with %s', fileReplacement.fromRegex, fileReplacement.to);
+          replacementInfo.push(fileReplacement);
         }
       }
+
+      replacements.forEach(function (replacement) {
+        if (replacement) {
+          if (Array.isArray(replacement)) {
+            replacement.forEach(replaceContent);
+          } else {
+            replaceContent(replacement);
+          }
+        }
+      });
+      callback();
     });
-    callback(null, content, replacementInfo);
+  }
+
+  async.eachSeries(cdnHostList, buildReplacementForHost, function(err) {
+    if (err) {
+      return masterCallback(err);
+    }
+
+    masterCallback(null, content, replacementInfo);
   });
 };
