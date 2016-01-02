@@ -68,6 +68,24 @@ describe('google-cdn', function () {
     });
   });
 
+  it('should replace lodash, even though bower and cdnjs use different names', function (cb) {
+    var source = '<script src="bower_components/lodash/dist/lodash.compat.js"></script>';
+    var bowerConfig = {
+      dependencies: { lodash: '~3.9.0' }
+    };
+
+    this.mainPath = 'lodash/dist/lodash.compat.js';
+
+    this.googlecdn(source, bowerConfig, { cdn: 'cdnjs' }, function (err, result) {
+      if (err) {
+        return cb(err);
+      }
+
+      assert.equal(result, '<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>');
+      cb();
+    });
+  });
+
   it('should throw without bowerJson', function () {
     var source = '<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>';
     var bowerConfig = null;
