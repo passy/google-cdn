@@ -1,6 +1,6 @@
 {
   "name": "google-cdn",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Replaces references to resources on the Google CDN",
   "keywords": [
     "cdn",
@@ -28,7 +28,7 @@
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-conventional-changelog": "^5.0.0",
+    "grunt-conventional-changelog": "^6.1.0",
     "grunt-conventional-github-releaser": "^1.0.0",
     "mocha": "^2.0.1",
     "proxyquire": "^1.0.1"

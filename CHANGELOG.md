@@ -1,3 +1,14 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/passy/google-cdn/compare/v1.0.0...v1.1.0) (2016-04-16)
+
+
+### Features
+
+* **cdn:** accept array of CDN hosts ([40ace31](https://github.com/passy/google-cdn/commit/40ace31))
+* **cdnjs:** check for matching bower packages by removing `.js` from the name ([548fc8b](https://github.com/passy/google-cdn/commit/548fc8b))
+
+
+
 <a name="1.0.0"></a>
 ## 1.0.0 (2014-11-26)
 
