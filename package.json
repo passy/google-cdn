@@ -34,7 +34,7 @@
     "proxyquire": "^1.0.1"
   },
   "engines": {
-    "node": ">=0.10.0",
+    "node": ">= 4",
     "npm": ">=1.2.10"
   },
   "licenses": [
