@@ -31,7 +31,7 @@
     "grunt-conventional-changelog": "^6.1.0",
     "grunt-conventional-github-releaser": "^1.0.0",
     "mocha": "^3.0.1",
-    "proxyquire": "^1.0.1"
+    "proxyquire": "^1.8.0"
   },
   "engines": {
     "node": ">= 4",
