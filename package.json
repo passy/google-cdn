@@ -23,7 +23,7 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "chai": "^3.2.0",
+    "chai": "^4.0.1",
     "escape-regexp": "0.0.1",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
