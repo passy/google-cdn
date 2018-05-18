@@ -1,4 +1,4 @@
-# google-cdn [![Build Status](https://secure.travis-ci.org/passy/google-cdn.svg?branch=master)](http://travis-ci.org/passy/google-cdn) [![Dependency Status](https://gemnasium.com/passy/google-cdn.svg)](https://gemnasium.com/passy/google-cdn) [![Code Climate](https://codeclimate.com/github/passy/google-cdn.svg)](https://codeclimate.com/github/passy/google-cdn)
+# google-cdn [![Build Status](https://secure.travis-ci.org/passy/google-cdn.svg?branch=master)](http://travis-ci.org/passy/google-cdn) [![Code Climate](https://codeclimate.com/github/passy/google-cdn.svg)](https://codeclimate.com/github/passy/google-cdn)
 
 > Grunt task for replacing refs to resources on the [Google CDN](https://developers.google.com/speed/libraries/devguide).
 
