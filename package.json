@@ -30,7 +30,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-conventional-changelog": "^6.1.0",
     "grunt-conventional-github-releaser": "^1.0.0",
-    "mocha": "^5.0.0",
+    "mocha": "^6.1.3",
     "proxyquire": "^1.0.1"
   },
   "engines": {
