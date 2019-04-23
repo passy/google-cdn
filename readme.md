@@ -1,5 +1,7 @@
 # google-cdn [![Build Status](https://secure.travis-ci.org/passy/google-cdn.svg?branch=master)](http://travis-ci.org/passy/google-cdn) [![Code Climate](https://codeclimate.com/github/passy/google-cdn.svg)](https://codeclimate.com/github/passy/google-cdn)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/passy/google-cdn.svg)](https://greenkeeper.io/)
+
 > Grunt task for replacing refs to resources on the [Google CDN](https://developers.google.com/speed/libraries/devguide).
 
 This module makes it easy to replace references to your bower resources in your
